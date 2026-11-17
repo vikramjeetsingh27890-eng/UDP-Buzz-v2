@@ -117,7 +117,8 @@ class UdpService : Service() {
                 val cfg = store.load()                  // settings apply live
                 if (cfg.allowedIp.isNotBlank() && cfg.allowedIp != from) continue
 
-                Haptics.vibrate(this, cfg)
+                val msg = String(packet.data, packet.offset, packet.length, Charsets.UTF_8)
+                Haptics.vibrate(this, Protocol.apply(cfg, msg))
                 state.update { it.copy(received = it.received + 1, lastFrom = from) }
             }
         } catch (e: Exception) {
